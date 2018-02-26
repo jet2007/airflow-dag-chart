@@ -1,0 +1,207 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+    <!--<meta charset="utf-8">-->
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!--<title>Airflow DAG runs</title>-->
+
+<!--</head>-->
+{% extends "airflow/master.html" %}
+{% block title %}Airflow - DAG runs{% endblock %}
+{% block head_css %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='dagruns/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='dagruns/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='dagruns/bootstrap-theme.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='dagruns/main.css') }}" rel="stylesheet">
+    <style type="text/css">
+    @font-face {
+        font-family: "glyphicon";
+        src: url({{ url_for('static', filename='dagruns/fonts/glyphicons-halflings-regular.ttf') }}) format("truetype");
+    }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <h2>DAG runs</h2>
+    
+    <div class="container">
+
+
+    <form>
+
+        <!-- DAG id filter -->
+
+        <div class="form-group">
+            <label for="dagid-text">DAG id</label>
+            <input class="form-control" id="dagid-text" placeholder="DAG id">
+
+            <div id="dagid-check">
+                <label class="radio-inline">
+                    <input type="radio" name="dagid-option" id="include-dagid-text" value="include" checked>
+                    Include DAGs
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="dagid-option" id="exclude-dagid-text" value="exclude">
+                    Exclude DAGs
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+
+            <!-- State filter -->
+
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="dagstate-check">State</label>
+                    <div id="dagstate-check">
+                        <label class="checkbox">
+                            <input class="form-control" type="checkbox" value="success" checked>success
+                        </label>
+                        <label class="checkbox">
+                            <input class="form-control" type="checkbox" value="running" checked>running
+                        </label>
+                        <label class="checkbox">
+                            <input class="form-control" type="checkbox" value="failed" checked>failed
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule filter -->
+
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="dagschedule-check">Schedule</label>
+                    <div id="dagschedule-check">
+                        <label class="checkbox">
+                            <input class="form-control" type="checkbox" value="hourly" checked>hourly
+                        </label>
+                        <label class="checkbox">
+                            <input class="form-control" type="checkbox" value="daily" checked>daily
+                        </label>
+                        <label class="checkbox">
+                            <input class="form-control" type="checkbox" value="other" checked>other
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Sort -->
+
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="dagsortby">Sort by</label>
+                    <div id="dagsortby">
+                        <label class="radio">
+                            <input type="radio" name="dagsortby-option" id="dagsort-start" value="earliestStart">
+                            Start Date
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="dagsortby-option" id="dagsort-end" value="latestEnd" checked>
+                            End Date
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="dagsortby-option" id="dagsort-id" value="dagId">
+                            DAG id
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="dagsortorder">Sort order</label>
+                    <div id="dagsortorder">
+                        <label class="radio">
+                            <input type="radio" name="dagsortorder-option" id="dagsort-asc" value="asc">
+                            Ascending
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="dagsortorder-option" id="dagsort-desc" value="desc" checked>
+                            Descending
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+
+        <!-- Date range -->
+
+        <div class="row" id="daterange-picker">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="from-datetime">From</label>
+                    <div class='input-group date' id='from-datetime'>
+                        <input type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="until-datetime">Until</label>
+                    <div class='input-group date' id='until-datetime'>
+                        <input type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default" id="date-range-today">Today</button>
+                    <button type="button" class="btn btn-default" id="date-range-last-2-days">Last 2 days</button>
+                    <button type="button" class="btn btn-default" id="date-range-last-7-days">Last 7 days</button>
+                </div>
+            </div>
+
+        </div>
+
+        <hr>
+
+            <button class="btn btn-default" id="filter-button">Filter</button>
+
+        <hr>
+
+    </form>
+
+    <div class="row" id="data-section">
+        <svg id="chart" width="100%"></svg>
+        <div class="tooltip" id="tooltip" style="opacity: 0"></div>
+    </div>
+
+</div>
+
+{% endblock %}}
+
+{% block tail %}
+    {{ super() }}
+    <script>
+        var data = JSON.parse({{ dag_runs | tojson }});
+    </script>
+
+    <script src="{{ url_for('static', filename='dagruns/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dagruns/d3.v3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dagruns/underscore.js') }}"></script>
+    <script src="{{ url_for('static', filename='dagruns/crossfilter.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dagruns/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dagruns/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dagruns/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dagruns/main.js') }}"></script>
+
+{% endblock %}}
