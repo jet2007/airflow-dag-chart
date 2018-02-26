@@ -188,7 +188,7 @@ class DagsRunningChart(BaseView):
         #dttm = datetime.now().date()
         #form = DateTimeForm(data={'execution_date': dttm})
 
-        return self.render("dags-charts/gantt.html"
+        return self.render("dags-charts/dagsrunningchart.html"
                             , data=json.dumps(data, indent=2)
                             , execution_date=execution_date
                             , dagid=dagid
