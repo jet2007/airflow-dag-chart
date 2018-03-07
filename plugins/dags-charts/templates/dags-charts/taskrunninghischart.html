@@ -36,6 +36,10 @@
 
     Dag:&nbsp<input class="form-control" id="dagid" name="dagid" placeholder="dag name" 
     {% if dagid %} value="{{ dagid }}" {% endif %} >
+
+    &nbsp &nbsp &nbsp &nbsp Task:&nbsp<input class="form-control" id="taskid" name="taskid" placeholder="task name" 
+    {% if taskid %} value="{{ taskid }}" {% endif %} >
+
     &nbsp &nbsp &nbsp &nbsp Time:&nbsp<input class="form-control" data-date-format="YYYY-MM-DD" data-role="datepicker" id="execution_date" 
   name="execution_date" type="text" value={{ execution_date }}>
 
