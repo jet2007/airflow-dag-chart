@@ -61,8 +61,9 @@
     <option {% if display =='dag+scheduler(1day)' %}  selected="selected" {% endif %}  value="dag+scheduler(1day)">dag+scheduler(1day)</option>
   </select>
  &nbsp &nbsp &nbsp &nbsp &nbsp Sort:&nbsp<select class="form-control" id="sort" name="sort">
-  <option {% if display =='time' %}  selected="selected" {% endif %} value="time">time</option>
-  <option {% if display =='dag' %}  selected="selected" {% endif %} value="dag">dag</option  
+  <option {% if sort =='time' %}  selected="selected" {% endif %} value="time">time</option>
+  <option {% if sort =='dag' %}  selected="selected" {% endif %} value="dag">dag</option>
+    <option {% if sort =='duration' %}  selected="selected" {% endif %} value="duration">duration</option  
   </select> 
 
 

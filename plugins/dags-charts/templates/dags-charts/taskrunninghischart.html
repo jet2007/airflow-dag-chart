@@ -63,8 +63,9 @@
     <option {% if display =='day+dag+task' %}  selected="selected" {% endif %}  value="day+dag+task">day+dag+task</option>
   </select>
  &nbsp &nbsp &nbsp &nbsp &nbsp Sort:&nbsp<select class="form-control" id="sort" name="sort">
-  <option {% if display =='time' %}  selected="selected" {% endif %} value="time">time</option>
-  <option {% if display =='dag' %}  selected="selected" {% endif %} value="dag">dag</option  
+  <option {% if sort =='time' %}  selected="selected" {% endif %} value="time">time</option>
+  <option {% if sort =='dag' %}  selected="selected" {% endif %} value="dag">dag</option>
+  <option {% if sort =='duration' %}  selected="selected" {% endif %} value="duration">duration</option  
   </select> 
 
       &nbsp &nbsp<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">

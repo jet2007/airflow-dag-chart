@@ -93,7 +93,10 @@ class DagRunningHistoryChart(BaseView):
 
         if sort == 'time' :
             sortsql = '  start_date asc ,execution_date asc ,dag_id asc'
-        else : sortsql = ' dag_id asc,execution_date asc ,start_date asc '
+        elif sort == 'dag' : 
+            sortsql = ' dag_id asc,execution_date asc ,start_date asc '
+        else :
+            sortsql = ' TIMESTAMPDIFF( SECOND, start_date , IFNULL(end_date,NOW()) ) desc ' 
 
 
         session = settings.Session()
@@ -300,7 +303,10 @@ class TaskRunningHistoryChart(BaseView):
 
         if sort == 'time' :
             sortsql = '  start_date asc ,execution_date asc ,dag_id asc'
-        else : sortsql = ' dag_id asc,execution_date asc ,start_date asc '
+        elif sort == 'dag' : 
+            sortsql = ' dag_id asc,execution_date asc ,start_date asc '
+        else :
+            sortsql = ' TIMESTAMPDIFF( SECOND, start_date , IFNULL(end_date,NOW()) ) desc ' # 时长降序
 
         session = settings.Session()
         mysql_query = """
@@ -315,7 +321,7 @@ class TaskRunningHistoryChart(BaseView):
                   DATE_FORMAT(start_date, '%%Y-%%m-%%d')  execution_dt ,
                   CAST( CONCAT('2018-01-01 ', DATE_FORMAT(start_date, '%%H:%%i:%%s')) AS DATETIME ) as start_date_display , 
                   DATE_ADD( CAST( CONCAT('2018-01-01 ', DATE_FORMAT(start_date, '%%H:%%i:%%s')) AS DATETIME ) 
-                          , INTERVAL TIMESTAMPDIFF( SECOND, start_date , IFNULL(end_date,NOW()))  SECOND) end_date_display  
+                          , INTERVAL TIMESTAMPDIFF( SECOND, start_date , IFNULL(end_date,NOW()) )  SECOND ) end_date_display  
                 FROM
                   `task_instance` 
                     WHERE start_date >= DATE_ADD(:execution_date,INTERVAL :start_days DAY )
