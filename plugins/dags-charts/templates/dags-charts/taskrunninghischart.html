@@ -26,7 +26,7 @@
 
 {% block body %}
 
-<h2>Dag Runs History Chart</h2>
+<h2>Tasks Runs History Chart</h2>
 
 <form method="get">
 
@@ -34,24 +34,42 @@
 
   <div class="form-inline">
 
-    Dag:&nbsp<input class="form-control" id="dagid" name="dagid" placeholder="dag name" 
+    <span id="statuses_info" class="glyphicon glyphicon-info-sign" aria-hidden="true" title="一、dag/task支持多个值,或模糊匹配&#10; 二、Date：起始日期 &nbsp &nbsp &nbsp &#10;三、Days：时间间隔&nbsp &#10; 四、Show：Y轴统计维度&nbsp &#10;五、Sort：排序方式 &nbsp &#10;"></span>
+    Dag:&nbsp &nbsp<input class="form-control" id="dagid" name="dagid" placeholder="d01,d02... or d0 or blank" 
     {% if dagid %} value="{{ dagid }}" {% endif %} >
 
-    &nbsp &nbsp &nbsp &nbsp Task:&nbsp<input class="form-control" id="taskid" name="taskid" placeholder="task name" 
+    &nbsp &nbsp &nbsp &nbsp Task:&nbsp<input class="form-control" id="taskid" name="taskid" placeholder="t01,t02,... or t0 or blank" 
     {% if taskid %} value="{{ taskid }}" {% endif %} >
 
     &nbsp &nbsp &nbsp &nbsp Time:&nbsp<input class="form-control" data-date-format="YYYY-MM-DD" data-role="datepicker" id="execution_date" 
   name="execution_date" type="text" value={{ execution_date }}>
 
   &nbsp &nbsp &nbsp &nbsp Days:&nbsp<select class="form-control" id="num_days" name="num_days">
+    <option {% if num_days ==1 %}  selected="selected" {% endif %} value="1">1</option>
     <option {% if num_days ==7 %}  selected="selected" {% endif %} value="7">7</option>
     <option {% if num_days ==14 %}  selected="selected" {% endif %}  value="14">14</option>
     <option {% if num_days ==31 %}  selected="selected" {% endif %} value="31">31</option>
     <option {% if num_days ==93 %}  selected="selected" {% endif %} value="93">93</option> 
   </select>
 
-    <input type="submit" value="Go" class="btn btn-default" action="" method="get">
-    &nbsp&nbsp<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+
+
+  <p/>
+  <p/>
+  
+  &nbsp &nbsp Show:&nbsp<select class="form-control" id="display" name="display">
+  <option {% if display =='day' %}  selected="selected" {% endif %} value="day">day</option>
+    <option {% if display =='day+dag' %}  selected="selected" {% endif %} value="day+dag">day+dag</option>
+    <option {% if display =='day+dag+task' %}  selected="selected" {% endif %}  value="day+dag+task">day+dag+task</option>
+  </select>
+ &nbsp &nbsp &nbsp &nbsp &nbsp Sort:&nbsp<select class="form-control" id="sort" name="sort">
+  <option {% if display =='time' %}  selected="selected" {% endif %} value="time">time</option>
+  <option {% if display =='dag' %}  selected="selected" {% endif %} value="dag">dag</option  
+  </select> 
+
+      &nbsp &nbsp<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+     &nbsp &nbsp  <input type="submit" value="Go" class="btn btn-default" action="" method="get">
+
   </div>
 </form>
 <div style="clear: both;">

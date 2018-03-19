@@ -43,8 +43,9 @@ d3.gantt = function() {
 
       var s = ""
       s += "<div class='row'>";
-      s += "<div class='col-md-3'>run:<br/>start:<br/>end:<br/>duration:</div>"
+      s += "<div class='col-md-3'>name:<br/>run:<br/>start:<br/>end:<br/>duration:</div>"
       s += "<div class='col-md-9'><span style='color: #AAA'> "
+      s += d.runName + "<br/>";
       s += runId_format + "<br/>";
       s += d.isoStart + "<br/>";
       s += d.isoEnd + "<br/>";
