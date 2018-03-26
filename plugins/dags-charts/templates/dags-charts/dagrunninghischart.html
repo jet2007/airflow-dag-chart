@@ -61,9 +61,16 @@
     <option {% if display =='dag+scheduler(1day)' %}  selected="selected" {% endif %}  value="dag+scheduler(1day)">dag+scheduler(1day)</option>
   </select>
  &nbsp &nbsp &nbsp &nbsp &nbsp Sort:&nbsp<select class="form-control" id="sort" name="sort">
-  <option {% if sort =='time' %}  selected="selected" {% endif %} value="time">time</option>
-  <option {% if sort =='dag' %}  selected="selected" {% endif %} value="dag">dag</option>
-    <option {% if sort =='duration' %}  selected="selected" {% endif %} value="duration">duration</option  
+    <option {% if sort =='time' %}  selected="selected" {% endif %} value="time">time</option>
+    <option {% if sort =='dag' %}  selected="selected" {% endif %} value="dag">dag</option>
+    <option {% if sort =='duration' %}  selected="selected" {% endif %} value="duration">duration</option>  
+  </select> 
+
+ &nbsp &nbsp &nbsp State:&nbsp<select class="form-control" id="state" name="state">
+    <option {% if state =='all' %}  selected="selected" {% endif %} value="all">all</option>
+    <option {% if state =='success' %}  selected="selected" {% endif %} value="success">success</option>
+    <option {% if state =='running' %}  selected="selected" {% endif %} value="running">running</option> 
+    <option {% if state =='failed' %}  selected="selected" {% endif %} value="failed">failed</option> 
   </select> 
 
 

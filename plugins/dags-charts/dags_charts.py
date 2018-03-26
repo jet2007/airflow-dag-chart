@@ -58,6 +58,7 @@ class DagRunningHistoryChart(BaseView):
         num_days = request.args.get('num_days')
         display = request.args.get('display')      # day,day+dag,dag+dag+scheduler
         sort = request.args.get('sort') 
+        state = request.args.get('state') 
 
         #dagid = 'dag008'
         if (not dagid) or len(dagid) <0 :
@@ -72,7 +73,8 @@ class DagRunningHistoryChart(BaseView):
                     display = 'day+dag'
         if (not sort) or len(sort) <0 :
                     sort = 'time'
-
+        if (not state) or len(state) <0 :
+                    state = 'all'
 
         curr_user = airflow.login.current_user
         # 是否为超级用户，普通用户只能看到自己
@@ -90,6 +92,13 @@ class DagRunningHistoryChart(BaseView):
             dagid_search_sql = " ( dag_id like concat( '%','"+ dagid + "','%' ) ) "
         else: 
             dagid_search_sql = " (1=1) "
+
+
+        state_search_sql = ""
+        if state == 'all' :
+            state_search_sql = " (1=1) "
+        else :
+            state_search_sql = " ( state = '" + state + "' ) "
 
         if sort == 'time' :
             sortsql = '  start_date asc ,execution_date asc ,dag_id asc'
@@ -119,8 +128,9 @@ class DagRunningHistoryChart(BaseView):
                       AND start_date < DATE_ADD(:execution_date,INTERVAL :end_days DAY )
                       AND %s
                       AND %s
+                      AND %s
                       ORDER BY %s
-                        """ % (dagid_search_sql,dag_filter_sql,sortsql)
+                        """ % (dagid_search_sql,dag_filter_sql,state_search_sql,sortsql)
 
         result = session.execute(mysql_query,
             {'execution_date': execution_date
@@ -220,8 +230,8 @@ class DagRunningHistoryChart(BaseView):
 
 
 
-        #logging.warning('##########################1')
-        #logging.warning(mysql_query)
+        logging.warning('##########################1')
+        logging.warning(mysql_query)
         #logging.warning('##########################2')
         #logging.warning(tasksUniq)
         #logging.warning('##########################3')
@@ -230,7 +240,7 @@ class DagRunningHistoryChart(BaseView):
         #logging.warning(tasks)
         #logging.warning('##########################5')
         #logging.warning(records)
-        #logging.warning('##########################6')
+        logging.warning('##########################6')
 
         return self.render("dags-charts/dagrunninghischart.html"
                         #    , dag_runs=json.dumps(dag_runs)
@@ -242,6 +252,7 @@ class DagRunningHistoryChart(BaseView):
                             , dagid=dagid
                             , display=display
                             , sort=sort
+                            , state=state
                             , dag=''
                           )
 
@@ -258,6 +269,7 @@ class TaskRunningHistoryChart(BaseView):
         num_days = request.args.get('num_days')
         display = request.args.get('display')      # day ,day+dag,day+dag+task
         sort = request.args.get('sort') 
+        state = request.args.get('state') 
 
         if (not dagid) or len(dagid) <0 :
             dagid =  ''
@@ -273,6 +285,8 @@ class TaskRunningHistoryChart(BaseView):
                     sort = 'time'
         if (not execution_date) or len(execution_date) <0 :
             execution_date = date.today().isoformat()
+        if (not state) or len(state) <0 :
+                    state = 'all'
 
 
         dag_filter_sql=""
@@ -300,6 +314,11 @@ class TaskRunningHistoryChart(BaseView):
         else: 
             taskid_search_sql = " (1=1) "
 
+        state_search_sql = ""
+        if state == 'all' :
+            state_search_sql = " (1=1) "
+        else :
+            state_search_sql = " ( state = '" + state + "' ) "
 
         if sort == 'time' :
             sortsql = '  start_date asc ,execution_date asc ,dag_id asc'
@@ -329,8 +348,9 @@ class TaskRunningHistoryChart(BaseView):
                       and %s
                       and %s 
                       and %s
+                      and %s
                       ORDER BY %s
-                        """ % (taskid_search_sql , dag_filter_sql, dagid_search_sql, sortsql )
+                        """ % (taskid_search_sql , dag_filter_sql, dagid_search_sql, state_search_sql, sortsql )
 
         result = session.execute(mysql_query,
             {'execution_date': execution_date
@@ -424,8 +444,8 @@ class TaskRunningHistoryChart(BaseView):
 
 
 
-        #logging.warning('##########################1')
-        #logging.warning(mysql_query)
+        logging.warning('##########################1')
+        logging.warning(mysql_query)
         #logging.warning('##########################2')
         #logging.warning(tasksUniq)
         #logging.warning('##########################3')
@@ -434,7 +454,7 @@ class TaskRunningHistoryChart(BaseView):
         #logging.warning(tasks)
         #logging.warning('##########################5')
         #logging.warning(records)
-        #logging.warning('##########################6')
+        logging.warning('##########################6')
         dttm = datetime.now().date()
         form = DateTimeForm(data={'execution_date': dttm})
 
@@ -449,6 +469,7 @@ class TaskRunningHistoryChart(BaseView):
                             , taskid=taskid
                             , display=display
                             , sort=sort
+                            , state=state
                             , dag=''
                           )
 
